@@ -11,13 +11,16 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import org.mariuszgromada.math.mxparser.Expression
+import com.mpobjects.bdparsii.eval.Expression
+import com.mpobjects.bdparsii.eval.Parser
+import com.mpobjects.bdparsii.eval.Scope
 import java.lang.Double.isNaN
 import java.math.BigDecimal
+import java.math.MathContext
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var previousCalculation: TextView
+    private lateinit var previousCalculation: EditText
     private lateinit var display: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         display = findViewById(R.id.displayEditText)
 
         display.setShowSoftInputOnFocus(false)
+        previousCalculation.setShowSoftInputOnFocus(false)
 
     }
 
@@ -176,19 +180,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun decimalBTN(view: View) {
-        var canAddDecimalEnd = false
-        for(i in display.text) {
-            if(i == '.') {
-                canAddDecimalEnd = true
-                Toast.makeText(applicationContext, "You already have point in number", Toast.LENGTH_SHORT).show()
-            }
-        }
-        if(display.text.isEmpty()) {
-            updateText("0.")
-        }
-        else if(!canAddDecimalEnd) {
-            updateText(".")
-        }
+        updateText(".")
+//        var canAddDecimalEnd = false
+//        for(i in display.text) {
+//            if(i == '.') {
+//                canAddDecimalEnd = true
+//                Toast.makeText(applicationContext, "You already have point in number", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//        if(display.text.isEmpty()) {
+//            updateText("0.")
+//        }
+//        else if(!canAddDecimalEnd) {
+//            updateText(".")
+//        }
 //        var canAddDecimalStart = false
 //        var canAddDecimalEnd = false
 //        var canAddDecimal = false
@@ -270,9 +275,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            var exp: Expression = Expression(userExp)
+            val scope = Scope()
+            scope.mathContext = MathContext(256)
 
-            var result = exp.calculate()
+            var exp: Expression = Parser.parse(userExp, scope)
+
+            var result = exp.evaluate().toPlainString()
 
             if(result.toString() == "Infinity"){
                 previousCalculation.setText("Infinity")
@@ -280,33 +288,22 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "You received infinity! Please enter correct data", Toast.LENGTH_SHORT).show()
             }
 
-            if(isNaN(result)) {
-                previousCalculation.setText("NaN")
-                display.setText("")
-                Toast.makeText(applicationContext, "You received NaN! Please enter correct data", Toast.LENGTH_SHORT).show()
-            }
+//            if(isNaN(result)) {
+//                previousCalculation.setText("NaN")
+//                display.setText("")
+//                Toast.makeText(applicationContext, "You received NaN! Please enter correct data", Toast.LENGTH_SHORT).show()
+//            }
 
-            var res:BigDecimal = result.toBigDecimal()
-
-            var s:String = res.toString()
-
-            if(s.contains("1.0E")){
-                previousCalculation.setText("0")
-                s = ""
-                Toast.makeText(applicationContext, "Dividing a large number by a small one", Toast.LENGTH_SHORT).show()
-            }
-
-            if(s == "0.0"){
-                previousCalculation.setText("0")
-                s = ""
-                Toast.makeText(applicationContext, "Dividing a small number by a large one", Toast.LENGTH_SHORT).show()
-            }
+            var s:String = result.toString()
 
             display.setText(s)
             display.setSelection(s.length)
 
         }
-        catch(e: NumberFormatException){
+        catch(e: Throwable){
+            previousCalculation.setText("NaN")
+            display.setText("")
+            Toast.makeText(applicationContext, "You received NaN! Please enter correct data", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -324,19 +321,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun trigArcSinBTN (view:View) {
-        updateText("arcsin(")
+        updateText("sinh(")
     }
 
     fun trigArcCosBTN (view:View) {
-        updateText("arccos(")
+        updateText("cosh(")
     }
 
     fun trigArcTanBTN (view:View) {
-        updateText("arctan(")
+        updateText("tanh(")
     }
 
     fun naturalLogBTN (view:View) {
-        updateText("!")
+        updateText("ln(")
     }
 
     fun logBTN (view:View) {
@@ -352,11 +349,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun piBTN (view:View) {
-        updateText("pi")
+        updateText("round(")
     }
 
     fun eBTN (view:View) {
-        updateText("e")
+        display.setSelection(0)
     }
 
     fun xSquaredBTN (view:View) {
@@ -368,7 +365,38 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun isPrimeBTN (view:View) {
-        updateText("ispr(")
+        if(display.getText().toString() == ""){
+            Toast.makeText(applicationContext, "Empty field! Please enter some data", Toast.LENGTH_SHORT).show()
+        }
+        else{
+            try{
+                equalsBTN(view)
+                if(display.getText().toString().toInt() < 500 && display.getText().toString().toInt() > 0){
+                    var res = factorial(display.getText().toString().toInt())
+                    display.setText("")
+                    previousCalculation.getText()?.insert(previousCalculation.length(), "!")
+                    updateText(res.toPlainString())
+                }
+                else{
+                    previousCalculation.setText("Infinity")
+                    display.setText("")
+                    Toast.makeText(applicationContext, "You received infinity! Please enter correct data", Toast.LENGTH_SHORT).show()
+                }
+            }
+            catch(e: Throwable){
+                previousCalculation.setText("")
+                display.setText("")
+                Toast.makeText(applicationContext, "You enter wrong data! Please enter correct data", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
+}
+
+fun factorial(n: Int): BigDecimal{
+    var result: BigDecimal = BigDecimal(1.0)
+    for (i in 1..n){
+        result *= i.toBigDecimal()
+    }
+    return result
 }
 

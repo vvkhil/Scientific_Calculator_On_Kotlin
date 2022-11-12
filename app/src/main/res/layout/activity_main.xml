@@ -7,12 +7,13 @@
     android:background="@drawable/app_background"
     tools:context=".MainActivity">
 
-    <TextView
+    <EditText
         android:id="@+id/previousCalculationView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="24sp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/displayEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -452,7 +453,7 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/button_background"
             android:onClick="naturalLogBTN"
-            android:text="@string/factorialText"
+            android:text="@string/NaturalLog"
             android:textAllCaps="false"
             android:textColor="@color/tanAccent"
             android:textSize="15sp"
@@ -480,7 +481,7 @@
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/button_background"
+            android:background="@drawable/clear_button_background"
             android:onClick="eBTN"
             android:text="@string/eText"
             android:textAllCaps="false"
