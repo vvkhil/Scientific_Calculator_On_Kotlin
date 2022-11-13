@@ -371,6 +371,24 @@ class MainActivity : AppCompatActivity() {
         else{
             try{
                 equalsBTN(view)
+
+                var userExp:String = previousCalculation.getText().toString()
+                var counter:Int = 0
+
+                for(i in userExp){
+                    if(i=='('){
+                        counter++
+                    }
+                    if(i==')'){
+                        counter--
+                    }
+                }
+
+                if(counter == 0) {
+                    previousCalculation.getText()?.insert(0, "(")
+                    previousCalculation.getText()?.insert(previousCalculation.length(), ")")
+                }
+
                 if(display.getText().toString().toInt() < 500 && display.getText().toString().toInt() > 0){
                     var res = factorial(display.getText().toString().toInt())
                     display.setText("")
