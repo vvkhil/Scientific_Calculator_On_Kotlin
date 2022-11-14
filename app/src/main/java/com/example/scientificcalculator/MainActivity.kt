@@ -3,6 +3,7 @@ package com.example.scientificcalculator
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.SpannableStringBuilder
+import android.text.TextUtils
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -17,6 +18,7 @@ import com.mpobjects.bdparsii.eval.Scope
 import java.lang.Double.isNaN
 import java.math.BigDecimal
 import java.math.MathContext
+import java.math.RoundingMode
 
 class MainActivity : AppCompatActivity() {
 
@@ -180,7 +182,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun decimalBTN(view: View) {
+//        var changeText = StringBuilder(display.text.toString())
+//        var position = display.selectionEnd
+//
+//        changeText = changeText.apply { insert(position, '.') }
+//        val list = changeText.toString().split('+', '-', '*', '/', '^', '(', ')')
+//        for (item in list) {
+//            if(item.count { it == '.' } > 1) {
+//                Toast.makeText(applicationContext, "Incorrect form: you already have point in number", Toast.LENGTH_SHORT).show()
+//            }
+//        }
         updateText(".")
+//        var changeText = StringBuilder(display.text.toString())
+//        val list = changeText.toString().split('+', '-', '*', '/', '^', '(', ')')
+//        for (item in list) {
+//            if(item.count( { it == '.' } ) > 1) {
+//                Toast.makeText(applicationContext, "Incorrect form: you already have point in number", Toast.LENGTH_SHORT).show()
+//            }
+//            else{
+//                updateText(".")
+//            }
+//        }
 //        var canAddDecimalEnd = false
 //        for(i in display.text) {
 //            if(i == '.') {
@@ -275,18 +297,34 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            var changeText = StringBuilder(display.text.toString())
+            var list = changeText.toString().split(Regex("(?<=[()+/*-])|(?=[()+/*-])"))
+            var newList = ArrayList<String>()
+            for (item in list) {
+                if (item.contains('!')) {
+                    if (item.dropLast(1).toInt() > 460) throw ArithmeticException()
+                    newList.add(fact(item.dropLast(1).toInt()).toString())
+                }
+                else {
+                    newList.add(item)
+                }
+            }
+            changeText = StringBuilder(TextUtils.join("", newList))
+//                previousCalculation.setText(changeText)
+            display.setText(changeText)
+
+            userExp = display.getText().toString()
+
+
+
             val scope = Scope()
-            scope.mathContext = MathContext(256)
+            scope.mathContext = MathContext(1024)
 
             var exp: Expression = Parser.parse(userExp, scope)
 
-            var result = exp.evaluate().toPlainString()
+            val result = exp.evaluate().toPlainString()
 
-            if(result.toString() == "Infinity"){
-                previousCalculation.setText("Infinity")
-                display.setText("")
-                Toast.makeText(applicationContext, "You received infinity! Please enter correct data", Toast.LENGTH_SHORT).show()
-            }
+            if (result.length > 1029) throw ArithmeticException()
 
 //            if(isNaN(result)) {
 //                previousCalculation.setText("NaN")
@@ -300,10 +338,16 @@ class MainActivity : AppCompatActivity() {
             display.setSelection(s.length)
 
         }
-        catch(e: Throwable){
-            previousCalculation.setText("NaN")
+
+        catch(e: ArithmeticException) {
+            previousCalculation.setText("")
             display.setText("")
-            Toast.makeText(applicationContext, "You received NaN! Please enter correct data", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "Number is too big", Toast.LENGTH_SHORT).show()
+        }
+        catch(e: Exception){
+            previousCalculation.setText("")
+            display.setText("")
+            Toast.makeText(applicationContext, "Incorrect enter! Please enter correct data", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -321,15 +365,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun trigArcSinBTN (view:View) {
-        updateText("sinh(")
+        updateText("log2(")
     }
 
     fun trigArcCosBTN (view:View) {
-        updateText("cosh(")
+        updateText("cot(")
     }
 
     fun trigArcTanBTN (view:View) {
-        updateText("tanh(")
+        updateText("abs(")
     }
 
     fun naturalLogBTN (view:View) {
@@ -345,7 +389,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun absoluteValueBTN (view:View) {
-        updateText("abs(")
+        display.setSelection(display.text.length)
     }
 
     fun piBTN (view:View) {
@@ -365,56 +409,60 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun isPrimeBTN (view:View) {
-        if(display.getText().toString() == ""){
-            Toast.makeText(applicationContext, "Empty field! Please enter some data", Toast.LENGTH_SHORT).show()
-        }
-        else{
-            try{
-                equalsBTN(view)
-
-                var userExp:String = previousCalculation.getText().toString()
-                var counter:Int = 0
-
-                for(i in userExp){
-                    if(i=='('){
-                        counter++
-                    }
-                    if(i==')'){
-                        counter--
-                    }
-                }
-
-                if(counter == 0) {
-                    previousCalculation.getText()?.insert(0, "(")
-                    previousCalculation.getText()?.insert(previousCalculation.length(), ")")
-                }
-
-                if(display.getText().toString().toInt() < 500 && display.getText().toString().toInt() > 0){
-                    var res = factorial(display.getText().toString().toInt())
-                    display.setText("")
-                    previousCalculation.getText()?.insert(previousCalculation.length(), "!")
-                    updateText(res.toPlainString())
-                }
-                else{
-                    previousCalculation.setText("Infinity")
-                    display.setText("")
-                    Toast.makeText(applicationContext, "You received infinity! Please enter correct data", Toast.LENGTH_SHORT).show()
-                }
-            }
-            catch(e: Throwable){
-                previousCalculation.setText("")
-                display.setText("")
-                Toast.makeText(applicationContext, "You enter wrong data! Please enter correct data", Toast.LENGTH_SHORT).show()
-            }
-        }
+        updateText("!")
+//        if(display.getText().toString() == ""){
+//            Toast.makeText(applicationContext, "Empty field! Please enter some data", Toast.LENGTH_SHORT).show()
+//        }
+//        else{
+//            try{
+//                equalsBTN(view)
+//
+//                var userExp:String = previousCalculation.getText().toString()
+//                var counter:Int = 0
+//
+//                for(i in userExp){
+//                    if(i=='('){
+//                        counter++
+//                    }
+//                    if(i==')'){
+//                        counter--
+//                    }
+//                }
+//
+//                if(counter == 0) {
+//                    previousCalculation.getText()?.insert(0, "(")
+//                    previousCalculation.getText()?.insert(previousCalculation.length(), ")")
+//                }
+//
+//                if(display.getText().toString().toInt() < 500 && display.getText().toString().toInt() > 0){
+//                    var res = factorial(display.getText().toString().toInt())
+//                    display.setText("")
+//                    previousCalculation.getText()?.insert(previousCalculation.length(), "!")
+//                    updateText(res.toPlainString())
+//                }
+//                else{
+//                    previousCalculation.setText("Infinity")
+//                    display.setText("")
+//                    Toast.makeText(applicationContext, "You received infinity! Please enter correct data", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//            catch(e: Throwable){
+//                previousCalculation.setText("")
+//                display.setText("")
+//                Toast.makeText(applicationContext, "You enter wrong data! Please enter correct data", Toast.LENGTH_SHORT).show()
+//            }
+//        }
     }
 }
 
-fun factorial(n: Int): BigDecimal{
-    var result: BigDecimal = BigDecimal(1.0)
-    for (i in 1..n){
-        result *= i.toBigDecimal()
-    }
-    return result
+//fun factorial(n: Int): BigDecimal{
+//    var result: BigDecimal = BigDecimal(1.0)
+//    for (i in 1..n){
+//        result *= i.toBigDecimal()
+//    }
+//    return result
+//}
+fun fact(num: Int): BigDecimal? {
+    if (num.equals(0)) return BigDecimal.ONE
+    return fact(num - 1)?.multiply(num.toBigDecimal())
 }
-

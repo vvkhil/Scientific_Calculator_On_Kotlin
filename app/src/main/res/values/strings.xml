@@ -27,13 +27,13 @@
     <string name="trigSinText">sin</string>
     <string name="trigCosText">cos</string>
     <string name="trigTanText">tan</string>
-    <string name="trigArcSinText">sinh</string>
-    <string name="trigArcCosText">cosh</string>
-    <string name="trigArcTanText">tanh</string>
+    <string name="trigArcSinText">log2</string>
+    <string name="trigArcCosText">cot</string>
+    <string name="trigArcTanText">|x|</string>
     <string name="NaturalLog">ln</string>
     <string name="LogText">log</string>
     <string name="squareRootText">√</string>
-    <string name="absoluteValueText">|x|</string>
+    <string name="absoluteValueText">end</string>
     <string name="piText">round</string>
     <string name="eText">start</string>
     <string name="xSquaredText">x<sup><small>2</small></sup></string>

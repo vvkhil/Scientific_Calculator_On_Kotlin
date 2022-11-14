@@ -397,6 +397,7 @@
             android:textAllCaps="false"
             android:textColor="@color/tanAccent"
             android:textSize="15sp"
+            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button" />
 
@@ -412,6 +413,7 @@
             android:textAllCaps="false"
             android:textColor="@color/tanAccent"
             android:textSize="15sp"
+            android:visibility="visible"
             app:layout_constraintStart_toEndOf="@+id/button4"
             app:layout_constraintTop_toBottomOf="@+id/button2" />
 
@@ -427,6 +429,7 @@
             android:textAllCaps="false"
             android:textColor="@color/tanAccent"
             android:textSize="15sp"
+            android:visibility="visible"
             app:layout_constraintStart_toEndOf="@+id/button5"
             app:layout_constraintTop_toBottomOf="@+id/button3" />
 
@@ -435,7 +438,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="60dp"
             android:background="@drawable/button_background"
             android:onClick="logBTN"
             android:text="@string/LogText"
@@ -443,14 +446,14 @@
             android:textColor="@color/tanAccent"
             android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button4" />
+            app:layout_constraintTop_toBottomOf="@+id/button" />
 
         <Button
             android:id="@+id/button8"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="60dp"
             android:background="@drawable/button_background"
             android:onClick="naturalLogBTN"
             android:text="@string/NaturalLog"
@@ -458,14 +461,14 @@
             android:textColor="@color/tanAccent"
             android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@+id/button7"
-            app:layout_constraintTop_toBottomOf="@+id/button5" />
+            app:layout_constraintTop_toBottomOf="@+id/button2" />
 
         <Button
             android:id="@+id/button9"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="60dp"
             android:background="@drawable/button_background"
             android:onClick="squareBTN"
             android:text="@string/squareRootText"
@@ -473,7 +476,7 @@
             android:textColor="@color/tanAccent"
             android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@+id/button8"
-            app:layout_constraintTop_toBottomOf="@+id/button6" />
+            app:layout_constraintTop_toBottomOf="@+id/button3" />
 
         <Button
             android:id="@+id/button10"
@@ -511,7 +514,7 @@
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/button_background"
+            android:background="@drawable/clear_button_background"
             android:onClick="absoluteValueBTN"
             android:text="@string/absoluteValueText"
             android:textAllCaps="false"
